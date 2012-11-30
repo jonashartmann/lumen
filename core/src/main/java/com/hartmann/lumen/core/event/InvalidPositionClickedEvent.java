@@ -4,6 +4,8 @@ import com.hartmann.lumen.core.tools.event.MvpEvent;
 
 public class InvalidPositionClickedEvent implements MvpEvent {
 
+	private static final long serialVersionUID = 4187139203904617372L;
+
 	private final float x;
 	private final float y;
 

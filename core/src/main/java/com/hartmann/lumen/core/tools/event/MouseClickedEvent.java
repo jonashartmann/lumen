@@ -2,6 +2,8 @@ package com.hartmann.lumen.core.tools.event;
 
 public class MouseClickedEvent implements MvpEvent {
 
+	private static final long serialVersionUID = 8946118613759777358L;
+
 	private final float x;
 	private final float y;
 	private int playerId;

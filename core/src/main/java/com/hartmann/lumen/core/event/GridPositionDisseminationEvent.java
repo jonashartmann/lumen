@@ -4,6 +4,8 @@ import com.hartmann.lumen.core.tools.event.MvpEvent;
 
 public class GridPositionDisseminationEvent implements MvpEvent {
 
+	private static final long serialVersionUID = -2367143833847433754L;
+
 	private final int x;
 	private final int y;
 	private final int fortification;

@@ -1,9 +1,6 @@
 package com.hartmann.lumen.core.ui;
 
 import static playn.core.PlayN.graphics;
-
-import java.awt.Color;
-
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Font.Style;

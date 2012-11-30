@@ -27,8 +27,7 @@ public class LumenGame implements Game {
 
 		gameManager = new LuxGameManager(SCREEN_WIDTH, SCREEN_HEIGHT);
 		gameManager.init();
-		
-		
+
 	}
 
 	@Override
@@ -47,5 +46,5 @@ public class LumenGame implements Game {
 	public int updateRate() {
 		return 25;
 	}
-	
+
 }
