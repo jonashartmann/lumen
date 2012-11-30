@@ -12,6 +12,12 @@ import playn.core.TextLayout;
 
 import com.hartmann.lumen.core.model.LuxPlayer;
 
+/**
+ * View used to show game information.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class GameInformationView {
 
 	private GroupLayer groupLayer;

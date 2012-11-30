@@ -14,9 +14,13 @@ import com.hartmann.lumen.core.tools.event.SimpleEventBus;
 
 /**
  * Manages the game loop and all the logic of the game.
+ * <p>
+ * Specific game logic should be handled by the {@link Mechanics} returned in
+ * the method {@link #createGameMechanics()}.
+ * </p>
  * 
- * @author Jonas
- * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
  */
 public abstract class GameManager {
 

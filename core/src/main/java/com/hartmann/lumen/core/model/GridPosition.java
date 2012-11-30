@@ -3,8 +3,8 @@ package com.hartmann.lumen.core.model;
 /**
  * Represents a position in a grid.
  * 
- * @author Jonas
- * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
  */
 public class GridPosition {
 	private final int x;

@@ -15,6 +15,12 @@ import tripleplay.ui.layout.AxisLayout;
 
 import com.hartmann.lumen.core.tools.ClickListener;
 
+/**
+ * View for showing credits for the Lumen game.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class CreditsView extends UIScreen {
 
 	private Root root;

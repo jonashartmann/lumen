@@ -1,5 +1,11 @@
 package com.hartmann.lumen.core.model;
 
+/**
+ * Represents a player in the Lumen game.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public enum LuxPlayer {
 	NEUTRAL(0, HSBColor.GREEN), PLAYER_ONE(1, HSBColor.RED), PLAYER_TWO(2,
 			HSBColor.BLUE);
@@ -24,6 +30,14 @@ public enum LuxPlayer {
 		return color;
 	}
 
+	/**
+	 * Gets an instance of {@link LuxPlayer}. If the id is invalid, it returns
+	 * null.
+	 * 
+	 * @param id
+	 *            - Id of the player
+	 * @return Returns the player with the given id
+	 */
 	public static LuxPlayer getById(int id) {
 		switch (id) {
 		case 0:
@@ -34,6 +48,6 @@ public enum LuxPlayer {
 			return LuxPlayer.PLAYER_TWO;
 		}
 
-		throw new IllegalArgumentException("Id not recognized! id=" + id);
+		return null;
 	}
 }

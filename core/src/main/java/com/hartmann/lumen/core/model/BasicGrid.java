@@ -3,8 +3,8 @@ package com.hartmann.lumen.core.model;
 /**
  * Basic implementation of a grid.
  * 
- * @author Jonas
- * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
  */
 public class BasicGrid extends Grid {
 

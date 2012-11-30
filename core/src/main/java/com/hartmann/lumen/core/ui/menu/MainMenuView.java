@@ -15,6 +15,12 @@ import tripleplay.ui.layout.AxisLayout;
 
 import com.hartmann.lumen.core.tools.ClickListener;
 
+/**
+ * View used when in the Main Menu.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class MainMenuView extends UIScreen {
 
 	protected Label label;

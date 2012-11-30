@@ -3,6 +3,13 @@ package com.hartmann.lumen.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Extension of the {@link Grid} for the Lumen game. It uses
+ * {@link LuxGridPosition} positions instead of the default implementation.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class LuxGrid extends Grid {
 
 	public LuxGrid(int width, int height) {

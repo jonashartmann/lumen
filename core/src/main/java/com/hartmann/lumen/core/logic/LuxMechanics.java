@@ -20,6 +20,12 @@ import com.hartmann.lumen.core.tools.event.EventBus;
 import com.hartmann.lumen.core.tools.event.MouseClickedEvent;
 import com.hartmann.lumen.core.tools.event.MvpEventHandler;
 
+/**
+ * Implementation of the game logic {@link Mechanics} for Lumen.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class LuxMechanics implements Mechanics {
 
 	private static final Logger logger = Logger.getLogger(LuxMechanics.class

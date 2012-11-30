@@ -3,14 +3,19 @@ package com.hartmann.lumen.core.tools.event;
 import java.io.Serializable;
 
 /**
- * Interface for the mvp event handlers.
+ * Interface for MVP event handlers.
  * 
- * @author Jonas Hartmann
- * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
  * @param <T>
- *            event to this handler
+ *            Type of the event to be handled.
  */
 public interface MvpEventHandler<T extends MvpEvent> extends Serializable {
-
-    public void onEvent(T event);
+	/**
+	 * Called upon event being fired.
+	 * 
+	 * @param event
+	 *            - The event that was fired
+	 */
+	public void onEvent(T event);
 }

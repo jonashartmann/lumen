@@ -1,5 +1,11 @@
 package com.hartmann.lumen.core.logic;
 
+/**
+ * An interface for classes that handle specific game logic.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public interface Mechanics {
 
 	/**

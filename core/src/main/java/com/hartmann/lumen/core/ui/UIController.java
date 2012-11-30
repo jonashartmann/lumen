@@ -13,6 +13,13 @@ import com.hartmann.lumen.core.ui.menu.GameOverView;
 import com.hartmann.lumen.core.ui.menu.MainMenuView;
 import com.hartmann.lumen.core.ui.menu.PauseMenuView;
 
+/**
+ * Controllers for the views. It handle events and delegates logic to the game
+ * manager.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class UIController implements
 		MvpEventHandler<GridPositionDisseminationEvent> {
 

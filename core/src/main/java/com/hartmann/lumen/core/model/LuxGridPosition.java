@@ -1,5 +1,12 @@
 package com.hartmann.lumen.core.model;
 
+/**
+ * Extension of a {@link GridPosition}, so that we can save information specific
+ * to the Lumen game.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class LuxGridPosition extends GridPosition {
 
 	private static final int MAX_FORTIFICATION = 99;

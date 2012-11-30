@@ -15,6 +15,12 @@ import com.hartmann.lumen.core.model.LuxGrid;
 import com.hartmann.lumen.core.model.LuxGridPosition;
 import com.hartmann.lumen.core.model.LuxPlayer;
 
+/**
+ * View that shows the board of the Lumen game.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class GridView {
 	private static final Logger logger = Logger.getLogger(GridView.class
 			.getName());

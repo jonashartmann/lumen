@@ -9,6 +9,17 @@ import playn.core.ImageLayer;
 import com.hartmann.lumen.core.logic.GameManager;
 import com.hartmann.lumen.core.logic.LuxGameManager;
 
+/**
+ * This is the starting point of the Lumen game. It is an implementation of the
+ * PlayN {@link Game} interface.
+ * <p>
+ * It defines the update rate, adds a background and initializes the game. The
+ * control of the game loop is then delegated to a {@link GameManager}.
+ * Specifically, a {@link LuxGameManager}.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class LumenGame implements Game {
 
 	private static final int SCREEN_WIDTH = 600;

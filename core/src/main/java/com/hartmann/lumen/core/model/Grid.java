@@ -1,11 +1,10 @@
 package com.hartmann.lumen.core.model;
 
-
 /**
  * Represents a grid.
  * 
- * @author Jonas
- * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
  */
 public abstract class Grid {
 
@@ -30,6 +29,16 @@ public abstract class Grid {
 		return height;
 	}
 
+	/**
+	 * Gets the {@link GridPosition} at the specified x and y. If the indexes
+	 * are invalid, then it will return null.
+	 * 
+	 * @param x
+	 *            - The index of the first dimension
+	 * @param y
+	 *            - The index of the second dimension
+	 * @return Returns the position found or null if none was found.
+	 */
 	public GridPosition getGridPosition(int x, int y) {
 		if (!isValidPosition(x, y)) {
 			return null;

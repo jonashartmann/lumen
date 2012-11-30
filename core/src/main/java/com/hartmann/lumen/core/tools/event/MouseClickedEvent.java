@@ -1,5 +1,11 @@
 package com.hartmann.lumen.core.tools.event;
 
+/**
+ * Event representing a mouse click.
+ * 
+ * @author Jonas Hartmann &lt;jonasharty@gmail.com&gt;
+ * @since 30.11.2012
+ */
 public class MouseClickedEvent implements MvpEvent {
 
 	private static final long serialVersionUID = 8946118613759777358L;
