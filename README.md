@@ -11,6 +11,7 @@ Get a feeling of it by playing online: [Lumen][]
 The code archicture is event-based and allows the development of multiple modular grid-based games, which only need to define their game rules/mechanics. 
 
 The next features are:  
+
     - Artificial intelligence for single player games
     - Graphics / Art / Design
     - Mobile packaging and deployment
