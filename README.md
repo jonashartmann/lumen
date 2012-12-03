@@ -1,5 +1,5 @@
 # The Lumen Project
-### Version: Alpha
+##### Version: Alpha
 -------------------------------
 
 This is an ongoing project that uses the [PlayN][] framework, which enables cross-platform game development. The idea is to create an innovative and complex gameplay for a board game.
@@ -10,12 +10,12 @@ Get a feeling of it by playing online: [Lumen][]
 
 The code archicture allows the development of multiple grid-based games, which only need to define their game rules/mechanics. 
 
-
 --------------------------------------------------------------------
-### Designed by Jonas Hartmann
-### Developed by:
+#### Designed by Jonas Hartmann
+#### Contributors (developers, artists, and so on ...):
 	- Jonas Hartmann
-	- <Your Name Here>
+	- <Your Name Here>	
 
+###### The source code is released under the MIT license
 [lumen]: https://manager-hartapps.rhcloud.com/lumen/ "The Lumen Project"
 [playn]: https://code.google.com/p/playn/ "PlayN @ Google Code"
