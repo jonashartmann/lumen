@@ -8,9 +8,8 @@
 	<div class="container">
 		<p>Grid Size: {{grid.cols}} x {{grid.rows}}</p>
 		<stage id="lumen-stage" class="stage">
-			<layer>
-				<rect></rect>
-				<rect pos-x="100"></rect>
+			<layer ng-controller="GridCtrl">
+				<rect opt="opt"></rect>
 			</layer>
 			<layer>
 			</layer>
@@ -27,6 +26,7 @@
 	<script type="text/javascript" src="components/kinetic/rect-directive.js"></script>
 	<script type="text/javascript" src="components/grid/grid.js"></script>
 	<script type="text/javascript" src="components/grid/grid-service.js"></script>
+	<script type="text/javascript" src="components/grid/grid-controller.js"></script>
 	<script type="text/javascript" src="gamemanager/gamemanager.js"></script>
 
 </body>
