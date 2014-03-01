@@ -7,12 +7,7 @@
 <body ng-app="lumen" ng-controller="LumenCtrl">
 	<div class="container">
 		<p>Grid Size: {{grid.cols}} x {{grid.rows}}</p>
-		<stage id="lumen-stage" class="stage">
-			<layer ng-controller="GridCtrl">
-				<rect opt="opt"></rect>
-			</layer>
-			<layer>
-			</layer>
+		<stage stage-width="300" stage-height="300" id="lumen-stage" class="stage" ng-controller="GridCtrl">
 		</stage>
 	</div>
 
@@ -22,8 +17,6 @@
 	<script type="text/javascript" src="app-controller.js"></script>
 	<script type="text/javascript" src="components/kinetic/kinetic.js"></script>
 	<script type="text/javascript" src="components/kinetic/stage-directive.js"></script>
-	<script type="text/javascript" src="components/kinetic/layer-directive.js"></script>
-	<script type="text/javascript" src="components/kinetic/rect-directive.js"></script>
 	<script type="text/javascript" src="components/grid/grid.js"></script>
 	<script type="text/javascript" src="components/grid/grid-service.js"></script>
 	<script type="text/javascript" src="components/grid/grid-controller.js"></script>
