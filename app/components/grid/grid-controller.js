@@ -1,8 +1,8 @@
 (function() {
 	'use strict';
 	angular.module('hart.grid')
-	.controller('GridCtrl', ['$scope', 'Grid', function GridCtrl ($scope, Grid) {
-		Grid.init(6, 6);
+	.controller('GridCtrl', ['$scope', 'Grid', 'GameManager',
+	function GridCtrl ($scope, Grid, GameManager) {
 		$scope.grid = Grid;
 
 		// Create grid UI after the stage is ready
@@ -24,6 +24,11 @@
 						draggable: false
 					};
 					var rect = new Kinetic.Rect(options);
+					rect.gridPos = {
+						col: i,
+						row: j
+					};
+					rect.on('click', GameManager.onPositionClicked);
 					layer.add(rect);
 					// console.log('Added Rectangle', rect);
 				}

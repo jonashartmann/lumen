@@ -1,4 +1,4 @@
 (function() {
 	'use strict';
-	angular.module('hart.grid', []);
+	angular.module('hart.grid', ['kinetic']);
 })();

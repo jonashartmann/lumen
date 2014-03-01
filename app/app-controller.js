@@ -2,6 +2,6 @@
 	'use strict';
 	Lumen.controller('LumenCtrl', ['$scope', 'Grid',
 	function LumenCtrl ($scope, Grid) {
-		$scope.grid = Grid;
+		Grid.init(6, 6);
 	}]);
 })(window.Lumen);
