@@ -2,10 +2,32 @@
 <html>
 <head>
 	<title>Lumen</title>
+	<link rel="stylesheet" type="text/css" href="app.css">
+</head>
+<body ng-app="lumen" ng-controller="LumenCtrl">
+	<div class="container">
+		<p>Grid Size: {{grid.cols}} x {{grid.rows}}</p>
+		<stage id="lumen-stage" class="stage">
+			<layer>
+				<rect></rect>
+				<rect pos-x="100"></rect>
+			</layer>
+			<layer>
+			</layer>
+		</stage>
+	</div>
+
 	<script type="text/javascript" src="components/lib/kineticjs/kinetic.js"></script>
 	<script type="text/javascript" src="components/lib/angular/angular.js"></script>
 	<script type="text/javascript" src="app.js"></script>
-</head>
-<body ng-app="lumen">
+	<script type="text/javascript" src="app-controller.js"></script>
+	<script type="text/javascript" src="components/kinetic/kinetic.js"></script>
+	<script type="text/javascript" src="components/kinetic/stage-directive.js"></script>
+	<script type="text/javascript" src="components/kinetic/layer-directive.js"></script>
+	<script type="text/javascript" src="components/kinetic/rect-directive.js"></script>
+	<script type="text/javascript" src="components/grid/grid.js"></script>
+	<script type="text/javascript" src="components/grid/grid-service.js"></script>
+	<script type="text/javascript" src="gamemanager/gamemanager.js"></script>
+
 </body>
 </html>
