@@ -3,16 +3,20 @@
 <head>
 	<title>Lumen</title>
 	<link rel="stylesheet" type="text/css" href="app.css">
+	<script type="text/javascript" src="components/lib/kineticjs/kinetic.js"></script>
+	<script type="text/javascript" src="components/lib/angular/angular.js"></script>
 </head>
 <body ng-app="lumen" ng-controller="LumenCtrl">
 	<div class="container">
-		<p>Grid Size: {{grid.cols}} x {{grid.rows}}</p>
+		<div class="hud ng-cloak" ng-controller="HudCtrl">
+			<p><b>{{game.currentPlayer | PlayerFilter}}</b> : {{game.paused | PauseFilter}}</p>
+			<button class="pause-toggle" ng-click="toggleGameState();">{{getToggleButtonLabel()}}</button>
+			<div class="messages" ng-show="messaging.getMessages().length > 0"><p ng-repeat="msg in messaging.getMessages() track by $index">{{msg}}</p></div>
+		</div>
 		<stage stage-width="300" stage-height="300" id="lumen-stage" class="stage" ng-controller="GridCtrl">
 		</stage>
 	</div>
 
-	<script type="text/javascript" src="components/lib/kineticjs/kinetic.js"></script>
-	<script type="text/javascript" src="components/lib/angular/angular.js"></script>
 	<script type="text/javascript" src="app.js"></script>
 	<script type="text/javascript" src="app-controller.js"></script>
 	<script type="text/javascript" src="components/kinetic/kinetic.js"></script>
@@ -22,6 +26,12 @@
 	<script type="text/javascript" src="components/grid/grid-controller.js"></script>
 	<script type="text/javascript" src="gamemanager/gamemanager.js"></script>
 	<script type="text/javascript" src="gamemanager/gamemanager-service.js"></script>
+	<script type="text/javascript" src="hud/hud.js"></script>
+	<script type="text/javascript" src="hud/hud-controller.js"></script>
+	<script type="text/javascript" src="hud/hud-filter.js"></script>
+
+	<script type="text/javascript" src="components/messaging/messaging.js"></script>
+	<script type="text/javascript" src="components/messaging/messaging-service.js"></script>
 
 </body>
 </html>

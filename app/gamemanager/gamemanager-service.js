@@ -1,17 +1,23 @@
 (function() {
 	'use strict';
 	angular.module('lumen.game')
-	.service('GameManager', ['Grid',
-	function GameManager (Grid) {
+	.service('GameManager', ['$rootScope', 'Grid', 'Messaging',
+	function GameManager ($rootScope, Grid, Messaging) {
 		return {
 			init: function init (startingPlayer) {
 				this.currentPlayer = startingPlayer;
+				this.paused = false;
 			},
 			createGrid: function createGrid (stage) {
 				var rectWidth = Math.floor(stage.getWidth() / Grid.cols - Grid.cols/2);
 				var rectHeight = Math.floor(stage.getHeight() / Grid.rows - Grid.rows/2);
 				console.log(rectWidth, rectHeight);
 				var layer = new Kinetic.Layer();
+
+				var self = this;
+				function clickHandler (e) {
+					$rootScope.$apply(self.onNodeClicked(e));
+				}
 
 				for (var i = 0; i < Grid.cols; i++) {
 					for (var j = 0; j < Grid.rows; j++) {
@@ -33,7 +39,7 @@
 							parent: rect
 						};
 						rect.lumen = node;
-						rect.on('click', this.onNodeClicked.bind(this));
+						rect.on('click', clickHandler);
 						layer.add(rect);
 						Grid.addNode(node.col, node.row, node);
 						// console.log('Added Rectangle', rect);
@@ -43,11 +49,18 @@
 				stage.add(layer);
 			},
 			onNodeClicked: function onNodeClicked (event) {
+				if (this.paused) return false;
+
 				var shape = event.targetNode;
 				var node = shape.lumen;
+
+				if (!this.isValidClick(this.currentPlayer, node)) {
+					Messaging.postMessage('You can\'t move there!');
+					return false;
+				}
 				node.player = this.currentPlayer;
+				this.currentPlayer = this.currentPlayer == 1 ? 2 : 1;
 				this.adjustNodeFill(node);
-				this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
 			},
 			setStartingNode: function setStartingNode (player, col, row) {
 				var node = Grid.getNode(col, row);
@@ -71,6 +84,45 @@
 						break;
 				}
 				shape.draw();
+			},
+			isValidClick: function isValidClick (player, node) {
+				// Do not click on other player's node!
+				if ((node.player !== 0) && (node.player !== player)) {
+					return false;
+				}
+
+				if (node.player === 0) {
+					return this.isNeighbourNode(player, node);
+				}
+
+				return true;
+			},
+			/**
+			 * Returns true if the node is neighbour of at least one
+			 * node that belongs to the player given.
+			 * Neighbourhood is checked only directly horizontally
+			 * or vertically.
+			 */
+			isNeighbourNode: function isNeighbourNode (player, node) {
+				var otherNode = null;
+				var isNeighbour = false;
+				otherNode = Grid.getNode(node.col-1, node.row);
+				if (otherNode) {
+					isNeighbour = isNeighbour || otherNode.player == player;
+				}
+				otherNode = Grid.getNode(node.col+1, node.row);
+				if (otherNode) {
+					isNeighbour = isNeighbour || otherNode.player == player;
+				}
+				otherNode = Grid.getNode(node.col, node.row-1);
+				if (otherNode) {
+					isNeighbour = isNeighbour || otherNode.player == player;
+				}
+				otherNode = Grid.getNode(node.col, node.row+1);
+				if (otherNode) {
+					isNeighbour = isNeighbour || otherNode.player == player;
+				}
+				return isNeighbour;
 			}
 		};
 	}]);
