@@ -11,6 +11,8 @@
 		<div class="hud ng-cloak" ng-controller="HudCtrl">
 			<div class="info">
 				<p><span><b>{{game.currentPlayer | PlayerFilter}}</b></span> : <span ng-class="{paused: game.paused, playing: !game.paused}">{{game.paused | PauseFilter}}</span></p>
+				<p>Turn: {{game.turn}}</p>
+				<p>{{game.disseminationList}}</p>
 			</div>
 			<button class="pause-toggle" ng-click="toggleGameState();">{{getToggleButtonLabel()}}</button>
 			<div class="messages" ng-show="messaging.getMessages().length > 0"><p ng-repeat="msg in messaging.getMessages() track by $index">{{msg}}</p></div>
