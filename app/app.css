@@ -13,3 +13,10 @@
 	border-radius: 10px;
 	border: 1px solid black;
 }
+
+.paused {
+	color: red;
+}
+.playing {
+	color: green;
+}
