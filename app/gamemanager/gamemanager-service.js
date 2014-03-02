@@ -93,9 +93,9 @@
 					this.prepareForDissemination(node);
 				}
 				node.player = this.currentPlayer;
-				this.updateShapeProps(node);
+				this.updateProps(node);
 
-				this.nextTurn();
+				this.nextTurn(node);
 			},
 			prepareForDissemination: function prepareForDissemination (node) {
 				if (!this.disseminationList[COUNTDOWN]) {
@@ -150,6 +150,18 @@
 			},
 			disseminate: function disseminate (node) {
 				console.log('DISSEMINATION!', node);
+				for (var i = -1; i <= 1; i++) {
+					for (var j = -1; j <= 1; j++) {
+						// Exclude diagonals
+						if (i == j || -1*i == j || i == j*-1) continue;
+						var otherNode = Grid.getNode(node.col + i, node.row + j);
+						if (otherNode && otherNode.player == node.player) {
+							console.log('->', otherNode);
+							otherNode.fortification++;
+							this.updateProps(otherNode);
+						}
+					}
+				}
 			},
 			redrawStage: function redrawStage () {
 				this.gridLayer.draw();
@@ -161,10 +173,10 @@
 					alert('WRONG STARTING POSITION MATE! ', col, row);
 				}
 				node.player = player;
-				this.updateShapeProps(node);
+				this.updateProps(node);
 				this.redrawStage();
 			},
-			updateShapeProps: function updateShapeProps (node) {
+			updateProps: function updateProps (node) {
 				var shape = node.parent;
 				switch (node.player) {
 					case 1:
@@ -201,20 +213,20 @@
 				var otherNode = null;
 				var isNeighbour = false;
 				otherNode = Grid.getNode(node.col-1, node.row);
-				if (otherNode) {
-					isNeighbour = isNeighbour || otherNode.player == player;
+				if (otherNode && otherNode.player == player) {
+					isNeighbour = true;
 				}
 				otherNode = Grid.getNode(node.col+1, node.row);
-				if (otherNode) {
-					isNeighbour = isNeighbour || otherNode.player == player;
+				if (otherNode && otherNode.player == player) {
+					isNeighbour = true;
 				}
 				otherNode = Grid.getNode(node.col, node.row-1);
-				if (otherNode) {
-					isNeighbour = isNeighbour || otherNode.player == player;
+				if (otherNode && otherNode.player == player) {
+					isNeighbour = true;
 				}
 				otherNode = Grid.getNode(node.col, node.row+1);
-				if (otherNode) {
-					isNeighbour = isNeighbour || otherNode.player == player;
+				if (otherNode && otherNode.player == player) {
+					isNeighbour = true;
 				}
 				return isNeighbour;
 			}
