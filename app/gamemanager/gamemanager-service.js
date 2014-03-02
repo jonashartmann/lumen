@@ -10,13 +10,13 @@
 			paused: false,
 			stage: null,
 			gridLayer: null,
-			fortificationLayer: null,
+			textLayer: null,
 			disseminationList: {},
 			init: function init (startingPlayer) {
 				this.currentPlayer = startingPlayer;
 				this.paused = false;
 				this.gridLayer = new Kinetic.Layer();
-				this.fortificationLayer = new Kinetic.Layer();
+				this.textLayer = new Kinetic.Layer();
 				this.turn = 1;
 			},
 			createGrid: function createGrid (stage) {
@@ -69,12 +69,26 @@
 							listening: false // don't block clicks
 						});
 						node.fortificationText = fortificationText;
-						this.fortificationLayer.add(fortificationText);
+						this.textLayer.add(fortificationText);
+
+						// Display countdown
+						var countdownText = new Kinetic.Text({
+							x: rect.x(),
+							y: rect.y(),
+							text: node.countdown.toString(),
+							fontSize: 10,
+							fontFamily: 'Calibri',
+							fill: 'white',
+							visible: false,
+							listening: false // don't block clicks
+						});
+						node.countdownText = countdownText;
+						this.textLayer.add(countdownText);
 					}
 				}
 
 				stage.add(this.gridLayer);
-				stage.add(this.fortificationLayer);
+				stage.add(this.textLayer);
 			},
 			onNodeClicked: function onNodeClicked (event) {
 				if (this.paused) return false;
@@ -133,6 +147,7 @@
 					var len = curList.length;
 					while (len--) {
 						var node = curList[len];
+						this.updateProps(node); // To update the countdown text
 						// Only update nodes of the current player
 						if (node.player != this.currentPlayer) {
 							continue;
@@ -155,17 +170,27 @@
 						// Exclude diagonals
 						if (i == j || -1*i == j || i == j*-1) continue;
 						var otherNode = Grid.getNode(node.col + i, node.row + j);
-						if (otherNode && otherNode.player == node.player) {
+						if (otherNode) {
 							console.log('->', otherNode);
-							otherNode.fortification++;
+							if (otherNode.player == node.player) {
+								otherNode.fortification++;
+							} else {
+								otherNode.fortification--;
+							}
+							// Conquered new positions?
+							if (otherNode.fortification === 0) {
+								otherNode.player = node.player;
+								otherNode.fortification = 1;
+							}
 							this.updateProps(otherNode);
 						}
 					}
 				}
+				this.updateProps(node);
 			},
 			redrawStage: function redrawStage () {
 				this.gridLayer.draw();
-				this.fortificationLayer.draw();
+				this.textLayer.draw();
 			},
 			setStartingNode: function setStartingNode (player, col, row) {
 				var node = Grid.getNode(col, row);
@@ -190,6 +215,8 @@
 						break;
 				}
 				node.fortificationText.setAttr('text', node.fortification.toString());
+				node.countdownText.setAttr('text', node.countdown.toString());
+				node.countdownText.setAttr('visible', node.countdown >= 0);
 			},
 			isValidClick: function isValidClick (player, node) {
 				// Do not click on other player's node!
