@@ -3,7 +3,8 @@
 	angular.module('lumen.game')
 	.service('GameManager', ['$rootScope', 'Grid', 'Messaging',
 	function GameManager ($rootScope, Grid, Messaging) {
-		var COUNTDOWN = 3;
+		var COUNTDOWN = 3,
+			MAX_FORTIFICATION = 99;
 		return {
 			currentPlayer: 1,
 			turn: 0,
@@ -104,6 +105,9 @@
 				if (node.player == this.currentPlayer) {
 					// Fortify and add to dissemination list
 					node.fortification++;
+					if (node.fortification > MAX_FORTIFICATION) {
+						node.fortification = MAX_FORTIFICATION;
+					}
 					this.prepareForDissemination(node);
 				}
 				node.player = this.currentPlayer;
@@ -116,11 +120,7 @@
 					this.disseminationList[COUNTDOWN] = [];
 				}
 				// Reset dissemination countdown, remove it from the list
-				if (node.countdown >= 0) {
-					var list = this.disseminationList[node.countdown];
-					var ix = list.indexOf(node);
-					list.splice(ix, 1);
-				}
+				this.stopCountdown(node);
 				// Add at the top of the countdown list
 				node.countdown = COUNTDOWN;
 				this.disseminationList[COUNTDOWN].push(node);
@@ -130,6 +130,9 @@
 				this.redrawStage();
 				this.turn++;
 				this.currentPlayer = this.currentPlayer == 1 ? 2 : 1;
+				if (this.isGameOver()) {
+					alert('Game Over!');
+				}
 			},
 			updateDissemination: function updateDissemination () {
 				for (var i = 0; i <= COUNTDOWN; i++) {
@@ -173,20 +176,34 @@
 						if (otherNode) {
 							console.log('->', otherNode);
 							if (otherNode.player == node.player) {
-								otherNode.fortification++;
+								// otherNode.fortification++;
+								otherNode.fortification += node.fortification;
+								if (otherNode.fortification > MAX_FORTIFICATION) {
+									otherNode.fortification = MAX_FORTIFICATION;
+								}
 							} else {
-								otherNode.fortification--;
+								// otherNode.fortification--;
+								otherNode.fortification -= node.fortification-1;
 							}
 							// Conquered new positions?
-							if (otherNode.fortification === 0) {
+							if (otherNode.fortification <= 0) {
 								otherNode.player = node.player;
 								otherNode.fortification = 1;
+								this.stopCountdown(otherNode);
 							}
 							this.updateProps(otherNode);
 						}
 					}
 				}
 				this.updateProps(node);
+			},
+			stopCountdown: function stopCountdown (node) {
+				if (node.countdown >= 0) {
+					var list = this.disseminationList[node.countdown];
+					var ix = list.indexOf(node);
+					list.splice(ix, 1);
+					node.countdown = -1;
+				}
 			},
 			redrawStage: function redrawStage () {
 				this.gridLayer.draw();
@@ -256,6 +273,24 @@
 					isNeighbour = true;
 				}
 				return isNeighbour;
+			},
+			isGameOver: function isGameOver () {
+				// TODO: replace by a more efficient logic
+				var playersFound = {1: false, 2: false};
+				for (var i = 0; i < Grid.cols; i++) {
+					for (var j = 0; j < Grid.rows; j++) {
+						var node = Grid.getNode(i, j);
+						playersFound[1] = playersFound[1] || node.player === 1;
+						playersFound[2] = playersFound[2] || node.player === 2;
+						if (playersFound[1] && playersFound[2]) {
+							return false;
+						}
+					}
+				}
+				if (playersFound[1] && playersFound[2]) {
+					return false;
+				}
+				return true;
 			}
 		};
 	}]);

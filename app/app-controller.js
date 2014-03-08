@@ -2,7 +2,7 @@
 	'use strict';
 	Lumen.controller('LumenCtrl', ['$scope', 'Grid', 'GameManager',
 	function LumenCtrl ($scope, Grid, GameManager) {
-		Grid.init(5, 5);
+		Grid.init(3, 3);
 		GameManager.init(1);
 
 		// Fill the grid after the stage is ready
