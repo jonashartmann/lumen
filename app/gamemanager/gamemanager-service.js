@@ -1,10 +1,52 @@
 (function() {
 	'use strict';
+
+	var Node = function Node (opts) {
+		return {
+			col: opts.col,
+			row: opts.row,
+			player: opts.player || 0,
+			fortification: opts.fortification || 1,
+			countdown: opts.countdown || -1,
+			parent: opts.parent || null,
+			fortificationText: new Kinetic.Text({
+				x: opts.parent.x() + opts.parent.width()/2 - 10,
+				y: opts.parent.y() + opts.parent.height()/2 - 15,
+				text: opts.fortification.toString(),
+				fontSize: 30,
+				fontFamily: 'Calibri',
+				fill: 'white',
+				listening: false // don't block clicks
+			}),
+			/**
+			 * Updates the shape properties linked to the node
+			 */
+			updateProps: function updateProps () {
+				var shape = this.parent;
+				switch (this.player) {
+					case 1:
+						shape.setAttr('fill', 'red');
+						break;
+					case 2:
+						shape.setAttr('fill', 'blue');
+						break;
+					default:
+						shape.setAttr('fill', '#00D2FF');
+						break;
+				}
+				this.fortificationText.setAttr('text', this.fortification.toString());
+				this.countdownText.setAttr('text', this.countdown.toString());
+				this.countdownText.setAttr('visible', this.countdown >= 0);
+			}
+		};
+	};
+
 	angular.module('lumen.game')
-	.service('GameManager', ['$rootScope', 'Grid', 'Messaging',
-	function GameManager ($rootScope, Grid, Messaging) {
+	.service('GameManager', ['$rootScope', 'Grid', 'Messaging', 'LumenLogic',
+	function GameManager ($rootScope, Grid, Messaging, LumenLogic) {
 		var COUNTDOWN = 3,
 			MAX_FORTIFICATION = 99;
+
 		return {
 			currentPlayer: 1,
 			turn: 0,
@@ -12,7 +54,6 @@
 			stage: null,
 			gridLayer: null,
 			textLayer: null,
-			disseminationList: {},
 			init: function init (startingPlayer) {
 				this.currentPlayer = startingPlayer;
 				this.paused = false;
@@ -28,6 +69,7 @@
 
 				var self = this;
 				function clickHandler (e) {
+					// Use $apply to put the callback inside angular digest cycle
 					$rootScope.$apply(self.onNodeClicked(e));
 				}
 
@@ -45,32 +87,21 @@
 						var rect = new Kinetic.Rect(options);
 
 						// add extra custom data
-						var node = {
+						var node = new Node({
 							col: i,
 							row: j,
 							player: 0,
 							fortification: 1,
 							countdown: -1,
 							parent: rect
-						};
+						});
 						rect.lumen = node;
 						rect.on('click', clickHandler);
 						this.gridLayer.add(rect);
 						Grid.addNode(node.col, node.row, node);
 						// console.log('Added Rectangle', rect);
 
-						// Display fortification
-						var fortificationText = new Kinetic.Text({
-							x: rect.x() + rect.width()/2 - 10,
-							y: rect.y() + rect.height()/2 - 15,
-							text: node.fortification.toString(),
-							fontSize: 30,
-							fontFamily: 'Calibri',
-							fill: 'white',
-							listening: false // don't block clicks
-						});
-						node.fortificationText = fortificationText;
-						this.textLayer.add(fortificationText);
+						this.textLayer.add(node.fortificationText);
 
 						// Display countdown
 						var countdownText = new Kinetic.Text({
@@ -91,119 +122,41 @@
 				stage.add(this.gridLayer);
 				stage.add(this.textLayer);
 			},
+			/**
+			 * Called when any node is clicked in the board
+			 */
 			onNodeClicked: function onNodeClicked (event) {
 				if (this.paused) return false;
 
 				var shape = event.targetNode;
 				var node = shape.lumen;
 
-				if (!this.isValidClick(this.currentPlayer, node)) {
+				if (!LumenLogic.nodeClicked(node, this.currentPlayer)) {
 					Messaging.postMessage('You can\'t move there!');
 					return false;
 				}
-				// Click on an owned position
-				if (node.player == this.currentPlayer) {
-					// Fortify and add to dissemination list
-					node.fortification++;
-					if (node.fortification > MAX_FORTIFICATION) {
-						node.fortification = MAX_FORTIFICATION;
-					}
-					this.prepareForDissemination(node);
-				}
-				node.player = this.currentPlayer;
-				this.updateProps(node);
 
-				this.nextTurn(node);
+				// Update visual properties
+				node.updateProps();
+
+				// After a valid click, we move to the next turn
+				this.nextTurn();
 			},
-			prepareForDissemination: function prepareForDissemination (node) {
-				if (!this.disseminationList[COUNTDOWN]) {
-					this.disseminationList[COUNTDOWN] = [];
-				}
-				// Reset dissemination countdown, remove it from the list
-				this.stopCountdown(node);
-				// Add at the top of the countdown list
-				node.countdown = COUNTDOWN;
-				this.disseminationList[COUNTDOWN].push(node);
-			},
+			/**
+			 * Moves to the next turn, updating any logic necessary
+			 */
 			nextTurn: function nextTurn () {
-				this.updateDissemination();
+				LumenLogic.endTurn(this.turn, this.currentPlayer);
 				this.redrawStage();
 				this.turn++;
-				this.currentPlayer = this.currentPlayer == 1 ? 2 : 1;
-				if (this.isGameOver()) {
+				this.changePlayer();
+
+				if (LumenLogic.isGameOver()) {
 					alert('Game Over!');
 				}
 			},
-			updateDissemination: function updateDissemination () {
-				for (var i = 0; i <= COUNTDOWN; i++) {
-					var curList = this.disseminationList[i];
-					if (!curList) {
-						continue;
-					}
-					var lowerList = i === 0 ? [] : this.disseminationList[i-1];
-					if (!lowerList) {
-						lowerList = this.disseminationList[i-1] = [];
-					}
-
-					// Either disseminate or push all nodes to the lower list
-					// Decreasing the countdown
-					var len = curList.length;
-					while (len--) {
-						var node = curList[len];
-						this.updateProps(node); // To update the countdown text
-						// Only update nodes of the current player
-						if (node.player != this.currentPlayer) {
-							continue;
-						}
-
-						node.countdown--;
-						if (i === 0) {
-							this.disseminate(node);
-						} else {
-							lowerList.push(node);
-						}
-						curList.splice(len, 1);
-					}
-				}
-			},
-			disseminate: function disseminate (node) {
-				console.log('DISSEMINATION!', node);
-				for (var i = -1; i <= 1; i++) {
-					for (var j = -1; j <= 1; j++) {
-						// Exclude diagonals
-						if (i == j || -1*i == j || i == j*-1) continue;
-						var otherNode = Grid.getNode(node.col + i, node.row + j);
-						if (otherNode) {
-							console.log('->', otherNode);
-							if (otherNode.player == node.player) {
-								// otherNode.fortification++;
-								otherNode.fortification += node.fortification;
-								if (otherNode.fortification > MAX_FORTIFICATION) {
-									otherNode.fortification = MAX_FORTIFICATION;
-								}
-							} else {
-								// otherNode.fortification--;
-								otherNode.fortification -= node.fortification-1;
-							}
-							// Conquered new positions?
-							if (otherNode.fortification <= 0) {
-								otherNode.player = node.player;
-								otherNode.fortification = 1;
-								this.stopCountdown(otherNode);
-							}
-							this.updateProps(otherNode);
-						}
-					}
-				}
-				this.updateProps(node);
-			},
-			stopCountdown: function stopCountdown (node) {
-				if (node.countdown >= 0) {
-					var list = this.disseminationList[node.countdown];
-					var ix = list.indexOf(node);
-					list.splice(ix, 1);
-					node.countdown = -1;
-				}
+			changePlayer: function changePlayer () {
+				this.currentPlayer = this.currentPlayer == 1 ? 2 : 1;
 			},
 			redrawStage: function redrawStage () {
 				this.gridLayer.draw();
@@ -215,82 +168,8 @@
 					alert('WRONG STARTING POSITION MATE! ', col, row);
 				}
 				node.player = player;
-				this.updateProps(node);
+				node.updateProps();
 				this.redrawStage();
-			},
-			updateProps: function updateProps (node) {
-				var shape = node.parent;
-				switch (node.player) {
-					case 1:
-						shape.setAttr('fill', 'red');
-						break;
-					case 2:
-						shape.setAttr('fill', 'blue');
-						break;
-					default:
-						shape.setAttr('fill', '#00D2FF');
-						break;
-				}
-				node.fortificationText.setAttr('text', node.fortification.toString());
-				node.countdownText.setAttr('text', node.countdown.toString());
-				node.countdownText.setAttr('visible', node.countdown >= 0);
-			},
-			isValidClick: function isValidClick (player, node) {
-				// Do not click on other player's node!
-				if ((node.player !== 0) && (node.player !== player)) {
-					return false;
-				}
-
-				if (node.player === 0) {
-					return this.isNeighbourNode(player, node);
-				}
-
-				return true;
-			},
-			/**
-			 * Returns true if the node is neighbour of at least one
-			 * node that belongs to the player given.
-			 * Neighbourhood is checked only directly horizontally
-			 * or vertically.
-			 */
-			isNeighbourNode: function isNeighbourNode (player, node) {
-				var otherNode = null;
-				var isNeighbour = false;
-				otherNode = Grid.getNode(node.col-1, node.row);
-				if (otherNode && otherNode.player == player) {
-					isNeighbour = true;
-				}
-				otherNode = Grid.getNode(node.col+1, node.row);
-				if (otherNode && otherNode.player == player) {
-					isNeighbour = true;
-				}
-				otherNode = Grid.getNode(node.col, node.row-1);
-				if (otherNode && otherNode.player == player) {
-					isNeighbour = true;
-				}
-				otherNode = Grid.getNode(node.col, node.row+1);
-				if (otherNode && otherNode.player == player) {
-					isNeighbour = true;
-				}
-				return isNeighbour;
-			},
-			isGameOver: function isGameOver () {
-				// TODO: replace by a more efficient logic
-				var playersFound = {1: false, 2: false};
-				for (var i = 0; i < Grid.cols; i++) {
-					for (var j = 0; j < Grid.rows; j++) {
-						var node = Grid.getNode(i, j);
-						playersFound[1] = playersFound[1] || node.player === 1;
-						playersFound[2] = playersFound[2] || node.player === 2;
-						if (playersFound[1] && playersFound[2]) {
-							return false;
-						}
-					}
-				}
-				if (playersFound[1] && playersFound[2]) {
-					return false;
-				}
-				return true;
 			}
 		};
 	}]);

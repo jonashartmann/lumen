@@ -1,4 +1,4 @@
 (function() {
 	'use strict';
-	angular.module('lumen.game', ['hart.grid', 'hart.messaging']);
+	angular.module('lumen.game', ['hart.grid', 'hart.messaging', 'lumen.logic']);
 })();
